@@ -3,14 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PsTool - Mapa Interativo de Hunts</title>
+    <title>PsTool - Ferramenta para PStory</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
-    <h1>PsTool - Mapa Interativo de Hunts</h1>
+    <!-- Menu de Navegação -->
+    <div id="navbar">
+        <button onclick="showSection('map')">Mapa</button>
+        <button onclick="showSection('option1')">Opção 1</button>
+        <button onclick="showSection('option2')">Opção 2</button>
+        <button onclick="showSection('option3')">Opção 3</button>
+        <button onclick="showSection('option4')">Opção 4</button>
+    </div>
+
+    <!-- Filtros do Mapa -->
+    <div id="menu">
+        <h2>Filtros</h2>
+        <label><input type="checkbox" id="filter-hunts" checked> Hunts de Pokémon</label><br>
+        <label><input type="checkbox" id="filter-rocket" checked> Equipe Rocket</label><br>
+        <label><input type="checkbox" id="filter-quest" checked> Local de Quests</label><br>
+        <label><input type="checkbox" id="filter-wild" checked> Entrada da Wild Area</label><br>
+    </div>
+
+    <!-- Área do Mapa -->
     <div id="map"></div>
 
+    <!-- Outras Seções -->
+    <div id="option1" class="section">Conteúdo para Opção 1</div>
+    <div id="option2" class="section">Conteúdo para Opção 2</div>
+    <div id="option3" class="section">Conteúdo para Opção 3</div>
+    <div id="option4" class="section">Conteúdo para Opção 4</div>
+
+    <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
