@@ -1,45 +1,82 @@
-// Defina as dimensões da imagem do mapa
-var mapWidth = 2000;  // Substitua com a largura real da sua imagem do mapa
-var mapHeight = 1500; // Substitua com a altura real da sua imagem do mapa
+function showSection(section) {
+    // Oculta todas as seções
+    document.querySelectorAll('.section, #map, #menu').forEach(el => el.style.display = 'none');
 
-// Inicializando o mapa
+    // Exibe a seção selecionada
+    if (section === 'map') {
+        document.getElementById('map').style.display = 'block';
+        document.getElementById('menu').style.display = 'block';
+    } else {
+        document.getElementById(section).style.display = 'block';
+    }
+}
+
+// Carrega o Mapa automaticamente na primeira visita
+showSection('map');
+
+// Configuração do Mapa com Leaflet.js
+var mapWidth = 2000;  // Largura da imagem do mapa
+var mapHeight = 1500; // Altura da imagem do mapa
+
 var map = L.map('map', {
-    minZoom: -2,  // Permite o zoom out inicial para mostrar todo o mapa
-    maxZoom: 0,   // Desativar o zoom in
+    minZoom: -2,
+    maxZoom: 0,
     center: [0, 0],
     zoom: 0,
-    crs: L.CRS.Simple  // Usamos o CRS.Simple porque estamos trabalhando com uma imagem estática
+    crs: L.CRS.Simple
 });
 
-// Defina os limites da imagem (canto superior esquerdo e inferior direito)
 var bounds = [[0, 0], [mapHeight, mapWidth]];
-
-// Adicionando a imagem do mapa
 var image = L.imageOverlay('mapa-pstory.png', bounds).addTo(map);
-
-// Limitar o arraste do mapa para as bordas da imagem
 map.setMaxBounds(bounds);
 
-// Adicionar ícones de Pokémon
-var hunts = [
-    { coords: [500, 1000], name: "Hunt Pikachu", icon: 'pikachu.png', description: "Pokémon: Pikachu, Raichu" },
-    { coords: [800, 1200], name: "Hunt Charizard", icon: 'charizard.png', description: "Pokémon: Charizard, Charmander" }
-];
+// Dados para Hunts, Equipe Rocket, Quests, etc.
+var locations = {
+    hunts: [
+        { coords: [500, 1000], icon: 'icons/pokeball.png', description: "Hunt de Pokémon" }
+    ],
+    rocket: [
+        { coords: [600, 900], icon: 'icons/rocket.png', description: "Spawn da Equipe Rocket" }
+    ],
+    quest: [
+        { coords: [400, 1000], icon: 'icons/quest.png', description: "Local de Quest" }
+    ],
+    wild: [
+        { coords: [750, 1200], icon: 'icons/wild.png', description: "Entrada da Wild Area" }
+    ]
+};
 
-hunts.forEach(function(hunt) {
+// Função para adicionar os marcadores no mapa com base nos filtros
+function updateMarkers() {
+    L.layerGroup().clearLayers();
+
+    if (document.getElementById('filter-hunts').checked) {
+        locations.hunts.forEach(hunt => addMarker(hunt));
+    }
+    if (document.getElementById('filter-rocket').checked) {
+        locations.rocket.forEach(rocket => addMarker(rocket));
+    }
+    if (document.getElementById('filter-quest').checked) {
+        locations.quest.forEach(quest => addMarker(quest));
+    }
+    if (document.getElementById('filter-wild').checked) {
+        locations.wild.forEach(wild => addMarker(wild));
+    }
+}
+
+// Função para adicionar marcadores
+function addMarker(location) {
     var icon = L.icon({
-        iconUrl: hunt.icon,  // O caminho do ícone de Pokémon (precisa adicionar a imagem ao projeto)
-        iconSize: [50, 50],  // Tamanho do ícone
-        iconAnchor: [25, 25], // Centralizar o ícone no ponto
-        popupAnchor: [0, -25] // Ajustar onde o popup aparece em relação ao ícone
+        iconUrl: location.icon,
+        iconSize: [30, 30]
     });
+    L.marker(location.coords, { icon: icon }).addTo(map).bindPopup(location.description);
+}
 
-    // Adicionar o marcador no mapa com um popup
-    var marker = L.marker(hunt.coords, { icon: icon }).addTo(map);
-    
-    // Exibir popup com detalhes ao passar o mouse
-    marker.bindTooltip(`<b>${hunt.name}</b><br>${hunt.description}`, {
-        permanent: false,
-        direction: 'top'
-    });
+// Atualiza os marcadores quando o filtro muda
+document.querySelectorAll('#menu input[type=checkbox]').forEach(input => {
+    input.addEventListener('change', updateMarkers);
 });
+
+// Atualiza os marcadores inicialmente
+updateMarkers();
